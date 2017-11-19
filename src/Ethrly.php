@@ -12,12 +12,7 @@ class Ethrly {
 
 	// Necessary
 	public $ip = '';
-	public $port = -1;
-
-	// For logging
-	public $id = 0;
-	public $name = '';
-	public $active = true;
+	public $port = 0;
 
 	// Runtime
 	public $timeout = 1;
@@ -25,7 +20,6 @@ class Ethrly {
 	public $socket;
 	public $error = '';
 	public $errno = 0;
-	public $uniqid = '';
 
 	function __construct( $ip, $port = null, $timeout = 5 ) {
 		$this->ip = $ip;
