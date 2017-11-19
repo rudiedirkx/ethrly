@@ -1,0 +1,18 @@
+{
+    "name": "rdx/ethrly",
+    "description": "ETH RLY API lib",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Rudie Dirkx",
+            "email": "github@hotblocks.nl"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "rdx\\ethrly\\": "src/"
+        }
+    },
+    "require": {}
+}
