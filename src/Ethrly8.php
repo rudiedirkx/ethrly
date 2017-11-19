@@ -6,7 +6,7 @@
 
 namespace rdx\ethrly;
 
-class Ethrly {
+class Ethrly8 {
 
 	const DEFAULT_PORT = 17494;
 

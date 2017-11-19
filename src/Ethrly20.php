@@ -9,7 +9,7 @@
 
 namespace rdx\ethrly;
 
-class Ethrly20 extends Ethrly {
+class Ethrly20 extends Ethrly8 {
 
 	function relay( $relay, $on ) {
 		return $this->write(array($on ? 32 : 33, $relay, 0));

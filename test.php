@@ -1,14 +1,14 @@
 <?php
 
 use rdx\ethrly\Ethrly20;
-use rdx\ethrly\Ethrly;
+use rdx\ethrly\Ethrly8;
 
 require 'vendor/autoload.php';
 require 'env.php';
 
 header('Content-type: text/plain; charset=utf-8');
 
-testToggle(Ethrly::class, ETHRLY_TEST_IP, ETHRLY_TEST_PORT8);
+testToggle(Ethrly8::class, ETHRLY_TEST_IP, ETHRLY_TEST_PORT8);
 testToggle(Ethrly20::class, ETHRLY_TEST_IP, ETHRLY_TEST_PORT20);
 
 function testToggle($class, $ip, $port) {
