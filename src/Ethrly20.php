@@ -11,11 +11,11 @@ namespace rdx\ethrly;
 
 class Ethrly20 extends Ethrly8 {
 
-	function relay( $relay, $on ) {
+	public function relay( $relay, $on ) {
 		return $this->write(array($on ? 32 : 33, $relay, 0));
 	}
 
-	function on( $relays = null ) {
+	public function on( $relays = null ) {
 		// Turn all ON
 		if ( $relays === null ) {
 			return $this->write(array(35, 255, 255, 255));
@@ -27,7 +27,7 @@ class Ethrly20 extends Ethrly8 {
 		}
 	}
 
-	function off( $relays = null ) {
+	public function off( $relays = null ) {
 		// Turn all OFF
 		if ( $relays === null ) {
 			return $this->write(array(35, 0, 0, 0));
@@ -39,15 +39,15 @@ class Ethrly20 extends Ethrly8 {
 		}
 	}
 
-	function READ_BYTES() {
+	protected function READ_BYTES() {
 		return 6;
 	}
 
-	function RELAYS() {
+	protected function RELAYS() {
 		return 20;
 	}
 
-	function STATUS_CODE() {
+	protected function STATUS_CODE() {
 		return 36;
 	}
 

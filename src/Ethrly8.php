@@ -21,14 +21,14 @@ class Ethrly8 {
 	public $error = '';
 	public $errno = 0;
 
-	function __construct( $ip, $port = null, $timeout = 5 ) {
+	public function __construct( $ip, $port = null, $timeout = 5 ) {
 		$this->ip = $ip;
 		$this->port = $port ?: DEFAULT_PORT;
 
 		$this->timeout = $timeout;
 	}
 
-	function socket() {
+	public function socket() {
 		if ( $this->socket === null ) {
 			$this->socket = @fsockopen($this->ip, $this->port, $this->errno, $this->error, $this->timeout) ?: false;
 			if ( $this->socket ) {
@@ -39,7 +39,7 @@ class Ethrly8 {
 		return $this->socket;
 	}
 
-	function close() {
+	public function close() {
 		if ( $this->socket ) {
 			@fclose($this->socket);
 			$this->socket = null;
@@ -48,7 +48,7 @@ class Ethrly8 {
 
 
 
-	function write( $code ) {
+	protected function write( $code ) {
 		$bytes = array_map('chr', (array)$code);
 
 		@fwrite($this->socket(), implode($bytes));
@@ -56,7 +56,7 @@ class Ethrly8 {
 		return $this->read();
 	}
 
-	function read() {
+	protected function read() {
 		$bytes = @fread($this->socket(), $this->READ_BYTES());
 		if ( $bytes === false || $bytes === '' ) {
 			return array();
@@ -68,7 +68,7 @@ class Ethrly8 {
 
 
 	// @overridable
-	function status() {
+	public function status() {
 		$bytes = $this->write($this->STATUS_CODE());
 		if ( !$bytes ) {
 			return array();
@@ -84,14 +84,14 @@ class Ethrly8 {
 	}
 
 	// @overridable
-	function relay( $relay, $on ) {
+	public function relay( $relay, $on ) {
 		$code = 100 + $relay + ( $on ? 0 : 10 );
 
 		return $this->write($code);
 	}
 
 	// @overridable
-	function on( $relays = null ) {
+	public function on( $relays = null ) {
 		// Turn all ON
 		if ( $relays === null ) {
 			return $this->write(100);
@@ -104,7 +104,7 @@ class Ethrly8 {
 	}
 
 	// @overridable
-	function off( $relays = null ) {
+	public function off( $relays = null ) {
 		// Turn all OFF
 		if ( $relays === null ) {
 			return $this->write(110);
@@ -117,23 +117,23 @@ class Ethrly8 {
 	}
 
 	// @overridable
-	function READ_BYTES() {
+	protected function READ_BYTES() {
 		return 1;
 	}
 
 	// @overridable
-	function RELAYS() {
+	protected function RELAYS() {
 		return 8;
 	}
 
 	// @overridable
-	function STATUS_CODE() {
+	protected function STATUS_CODE() {
 		return 91;
 	}
 
 
 
-	function dec201( $dec ) {
+	protected function dec201( $dec ) {
 		$bin = array();
 		for ( $i=7; $i>=0; $i-- ) {
 			$on = 0 < ($dec & pow(2, $i));
@@ -144,5 +144,4 @@ class Ethrly8 {
 		return $bin;
 	}
 
-
-} // END Class Ethrly
+}
