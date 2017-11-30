@@ -39,15 +39,15 @@ class Ethrly20 extends Ethrly8 {
 		}
 	}
 
-	protected function READ_BYTES() {
+	public function READ_BYTES() {
 		return 6;
 	}
 
-	protected function RELAYS() {
+	public function RELAYS() {
 		return 20;
 	}
 
-	protected function STATUS_CODE() {
+	public function STATUS_CODE() {
 		return 36;
 	}
 

@@ -23,7 +23,7 @@ class Ethrly8 {
 
 	public function __construct( $ip, $port = null, $timeout = 5 ) {
 		$this->ip = $ip;
-		$this->port = $port ?: DEFAULT_PORT;
+		$this->port = $port ?: self::DEFAULT_PORT;
 
 		$this->timeout = $timeout;
 	}
@@ -48,7 +48,7 @@ class Ethrly8 {
 
 
 
-	protected function write( $code ) {
+	public function write( $code ) {
 		$bytes = array_map('chr', (array)$code);
 
 		@fwrite($this->socket(), implode($bytes));
@@ -56,7 +56,7 @@ class Ethrly8 {
 		return $this->read();
 	}
 
-	protected function read() {
+	public function read() {
 		$bytes = @fread($this->socket(), $this->READ_BYTES());
 		if ( $bytes === false || $bytes === '' ) {
 			return array();
@@ -117,23 +117,23 @@ class Ethrly8 {
 	}
 
 	// @overridable
-	protected function READ_BYTES() {
+	public function READ_BYTES() {
 		return 1;
 	}
 
 	// @overridable
-	protected function RELAYS() {
+	public function RELAYS() {
 		return 8;
 	}
 
 	// @overridable
-	protected function STATUS_CODE() {
+	public function STATUS_CODE() {
 		return 91;
 	}
 
 
 
-	protected function dec201( $dec ) {
+	public function dec201( $dec ) {
 		$bin = array();
 		for ( $i=7; $i>=0; $i-- ) {
 			$on = 0 < ($dec & pow(2, $i));
