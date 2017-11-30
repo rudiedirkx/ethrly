@@ -72,6 +72,15 @@ ports.forEach(function(port) {
 				status[relayIndex] = 0;
 			}
 
+			else if ( cmd == 16 ) {
+				// info/version
+				var buffer = new Buffer(3);
+				buffer[0] = 1;
+				buffer[1] = 2;
+				buffer[2] = 3;
+				socket.write(buffer);
+			}
+
 			console.log('New status:', status.join(''));
 			writeStatus();
 		});

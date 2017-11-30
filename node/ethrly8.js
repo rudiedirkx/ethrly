@@ -60,6 +60,13 @@ ports.forEach(function(port) {
 				status[relayIndex] = 0;
 			}
 
+			else if ( cmd == 90 ) {
+				// info/version
+				var buffer = new Buffer(1);
+				buffer[0] = 1;
+				socket.write(buffer);
+			}
+
 			// else if ( cmd == 100 ) {
 			// 	// all on
 			// 	status.forEach(function(on, i) {
