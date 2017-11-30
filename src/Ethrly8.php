@@ -15,12 +15,22 @@ class Ethrly8 {
 	public $port = 0;
 
 	// Runtime
-	public $timeout = 1;
+	public $timeout = 0;
 	/** @var resource */
 	public $socket;
 	public $error = '';
 	public $errno = 0;
 
+	// For logging
+	public $id = 0;
+	public $name = '';
+	public $active = true;
+
+	/**
+	 * @param string $ip
+	 * @param int $port
+	 * @param int $timeout
+	 */
 	public function __construct( $ip, $port = null, $timeout = 5 ) {
 		$this->ip = $ip;
 		$this->port = $port ?: self::DEFAULT_PORT;
