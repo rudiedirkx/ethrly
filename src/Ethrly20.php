@@ -39,6 +39,21 @@ class Ethrly20 extends Ethrly8 {
 		}
 	}
 
+	public function verifyVersion() {
+		$version = $this->version();
+		return count($version) == 3;
+	}
+
+	// @overridable
+	public function getVersionString() {
+		$version = $this->version();
+		if ( !$version ) {
+			return 'Unknown';
+		}
+
+		return "Module {$version[0]}; Hardware {$version[1]}; Software {$version[2]}";
+	}
+
 	public function READ_BYTES() {
 		return 6;
 	}
@@ -49,6 +64,10 @@ class Ethrly20 extends Ethrly8 {
 
 	public function STATUS_CODE() {
 		return 36;
+	}
+
+	public function VERSION_CODE() {
+		return 16;
 	}
 
 }

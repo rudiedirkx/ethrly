@@ -20,6 +20,7 @@ class Ethrly8 {
 	public $socket;
 	public $error = '';
 	public $errno = 0;
+	public $version = null;
 
 	// For logging
 	public $id = 0;
@@ -76,6 +77,31 @@ class Ethrly8 {
 	}
 
 
+	public function version( $force = false ) {
+		if ( $this->version === null || $force ) {
+			$this->version = $this->write($this->VERSION_CODE()) ?: array();
+		}
+
+		return $this->version;
+	}
+
+
+
+	// @overridable
+	public function getVersionString() {
+		$version = $this->version();
+		if ( !$version ) {
+			return 'Unknown';
+		}
+
+		return "Software {$version[0]}";
+	}
+
+	// @overridable
+	public function verifyVersion() {
+		$version = $this->version();
+		return count($version) == 1;
+	}
 
 	// @overridable
 	public function status() {
@@ -139,6 +165,11 @@ class Ethrly8 {
 	// @overridable
 	public function STATUS_CODE() {
 		return 91;
+	}
+
+	// @overridable
+	public function VERSION_CODE() {
+		return 90;
 	}
 
 
