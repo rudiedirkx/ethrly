@@ -54,6 +54,16 @@ class Ethrly20 extends Ethrly8 {
 		return "Module {$version[0]}; Hardware {$version[1]}; Software {$version[2]}";
 	}
 
+	public function isPasswordProtected() {
+		$locked = $this->write(122);
+		if ( !$locked ) {
+			return null;
+		}
+
+		$locked = $locked[0];
+		return $locked == 0;
+	}
+
 	public function READ_BYTES() {
 		return 6;
 	}

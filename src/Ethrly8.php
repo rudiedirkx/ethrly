@@ -153,6 +153,11 @@ class Ethrly8 {
 	}
 
 	// @overridable
+	public function isPasswordProtected() {
+		return null;
+	}
+
+	// @overridable
 	public function READ_BYTES() {
 		return 1;
 	}
