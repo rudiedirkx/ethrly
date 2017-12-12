@@ -8,26 +8,28 @@ require 'env.php';
 
 header('Content-type: text/plain; charset=utf-8');
 
-testToggle(Ethrly8::class, ETHRLY_TEST_IP, ETHRLY_TEST_PORT8);
-testToggle(Ethrly20::class, ETHRLY_TEST_IP, ETHRLY_TEST_PORT20);
+testToggle(Ethrly8::class, ETHRLY_TEST_IP, ETHRLY_TEST_PORT8, ETHRLY_TEST_PASS);
+testToggle(Ethrly20::class, ETHRLY_TEST_IP, ETHRLY_TEST_PORT20, ETHRLY_TEST_PASS);
 
-function testToggle($class, $ip, $port) {
+function testToggle($class, $ip, $port, $pass = null) {
+	if ( $port === 0 ) return;
+
 	$refl = new ReflectionClass($class);
 
 	echo $refl->getShortName() . " - $ip:$port...\n";
-	$eth8 = new $class($ip, $port);
-	$eth8->socket();
+	$eth = new $class($ip, $port, null, $pass);
+	$eth->socket();
 
-	$status = $eth8->status();
+	$status = $eth->status();
 	echo implode($status) . "\n";
 
 	$relay = rand(1, 8);
 	$on = rand(0, 1);
 
 	echo str_repeat(' ', $relay-1) . ($on ? '1' : '0') . "\n";
-	$eth8->relay($relay, $on);
+	$eth->relay($relay, $on);
 
-	$status = $eth8->status();
+	$status = $eth->status();
 	echo implode($status) . "\n";
 
 	echo "\n\n";

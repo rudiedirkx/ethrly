@@ -9,15 +9,18 @@ namespace rdx\ethrly;
 class Ethrly8 {
 
 	const DEFAULT_PORT = 17494;
+	const DEFAULT_TIMEOUT = 5;
 
 	// Necessary
 	public $ip = '';
 	public $port = 0;
+	public $password = '';
 
 	// Runtime
 	public $timeout = 0;
 	/** @var resource */
 	public $socket;
+	public $unlocked = null;
 	public $error = '';
 	public $errno = 0;
 	public $version = null;
@@ -31,12 +34,14 @@ class Ethrly8 {
 	 * @param string $ip
 	 * @param int $port
 	 * @param int $timeout
+	 * @param string $password
 	 */
-	public function __construct( $ip, $port = null, $timeout = 5 ) {
+	public function __construct( $ip, $port = null, $timeout = null, $password = null ) {
 		$this->ip = $ip;
 		$this->port = $port ?: self::DEFAULT_PORT;
+		$this->password = $password;
 
-		$this->timeout = $timeout;
+		$this->timeout = $timeout ?: self::DEFAULT_TIMEOUT;
 	}
 
 	public function socket() {
@@ -44,10 +49,16 @@ class Ethrly8 {
 			$this->socket = @fsockopen($this->ip, $this->port, $this->errno, $this->error, $this->timeout) ?: false;
 			if ( $this->socket ) {
 				stream_set_timeout($this->socket, $this->timeout);
+
+				$this->unlock();
 			}
 		}
 
 		return $this->socket;
+	}
+
+	public function unlock() {
+		// This version doesn't have password protection
 	}
 
 	public function close() {
@@ -59,8 +70,11 @@ class Ethrly8 {
 
 
 
-	public function write( $code ) {
-		$bytes = array_map('chr', (array)$code);
+	public function write( $code, $binary = false ) {
+		$bytes = (array) $code;
+		if ( !$binary ) {
+			$bytes = array_map('chr', $bytes);
+		}
 
 		@fwrite($this->socket(), implode($bytes));
 

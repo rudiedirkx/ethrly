@@ -24,4 +24,4 @@ Use the scripts in `node/` to run a limited ETH RLY server with NodeJS.
 To do
 ---
 
-* Password support, for lib and fake server
+* Password support for fake server

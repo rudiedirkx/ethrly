@@ -11,6 +11,21 @@ namespace rdx\ethrly;
 
 class Ethrly20 extends Ethrly8 {
 
+	public function unlock() {
+		if ( $this->password !== null ) {
+			$bytes = str_split($this->password);
+			array_unshift($bytes, chr(121));
+
+			$rsp = $this->write($bytes, true);
+			if ( $rsp === array(1) ) {
+				$this->isPasswordProtected();
+				return $this->unlocked = true;
+			}
+
+			return $this->unlocked = false;
+		}
+	}
+
 	public function relay( $relay, $on ) {
 		return $this->write(array($on ? 32 : 33, $relay, 0));
 	}
