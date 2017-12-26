@@ -1,15 +1,15 @@
 <?php
 
-use rdx\ethrly\Ethrly20;
-use rdx\ethrly\Ethrly8;
+use rdx\ethrly\Ethrly1;
+use rdx\ethrly\Ethrly2;
 
 require 'vendor/autoload.php';
 require 'env.php';
 
 header('Content-type: text/plain; charset=utf-8');
 
-testToggle(Ethrly8::class, ETHRLY_TEST_IP, ETHRLY_TEST_PORT8, ETHRLY_TEST_PASS);
-testToggle(Ethrly20::class, ETHRLY_TEST_IP, ETHRLY_TEST_PORT20, ETHRLY_TEST_PASS);
+testToggle(Ethrly1::class, ETHRLY_TEST_IP, ETHRLY_TEST_PORT1, ETHRLY_TEST_PASS);
+testToggle(Ethrly2::class, ETHRLY_TEST_IP, ETHRLY_TEST_PORT2, ETHRLY_TEST_PASS);
 
 function testToggle($class, $ip, $port, $pass = null) {
 	if ( $port === 0 ) return;
