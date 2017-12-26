@@ -9,11 +9,13 @@ namespace rdx\ethrly;
 class Ethrly8 {
 
 	const DEFAULT_PORT = 17494;
+	const DEFAULT_RELAYS = 8;
 	const DEFAULT_TIMEOUT = 5;
 
 	// Necessary
 	public $ip = '';
 	public $port = 0;
+	public $relays = 0;
 	public $password = '';
 
 	// Runtime
@@ -36,9 +38,10 @@ class Ethrly8 {
 	 * @param int $timeout
 	 * @param string $password
 	 */
-	public function __construct( $ip, $port = null, $timeout = null, $password = null ) {
+	public function __construct( $ip, $port = null, $relays = null, $timeout = null, $password = null ) {
 		$this->ip = $ip;
 		$this->port = $port ?: self::DEFAULT_PORT;
+		$this->relays = $relays ?: self::DEFAULT_RELAYS;
 		$this->password = $password;
 
 		$this->timeout = $timeout ?: self::DEFAULT_TIMEOUT;
@@ -129,7 +132,7 @@ class Ethrly8 {
 			$bits = array_merge($bits, $this->dec201($byte));
 		}
 
-		$bits = array_slice($bits, 0, $this->RELAYS());
+		$bits = array_slice($bits, 0, $this->relays);
 		return array_combine(range(1, count($bits)), $bits);
 	}
 
@@ -174,11 +177,6 @@ class Ethrly8 {
 	// @overridable
 	public function READ_BYTES() {
 		return 1;
-	}
-
-	// @overridable
-	public function RELAYS() {
-		return 8;
 	}
 
 	// @overridable

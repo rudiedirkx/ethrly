@@ -83,10 +83,6 @@ class Ethrly20 extends Ethrly8 {
 		return 6;
 	}
 
-	public function RELAYS() {
-		return 20;
-	}
-
 	public function STATUS_CODE() {
 		return 36;
 	}

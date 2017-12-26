@@ -14,16 +14,18 @@ testToggle(Ethrly20::class, ETHRLY_TEST_IP, ETHRLY_TEST_PORT20, ETHRLY_TEST_PASS
 function testToggle($class, $ip, $port, $pass = null) {
 	if ( $port === 0 ) return;
 
+	$relays = 8;
+
 	$refl = new ReflectionClass($class);
 
 	echo $refl->getShortName() . " - $ip:$port...\n";
-	$eth = new $class($ip, $port, null, $pass);
+	$eth = new $class($ip, $port, $relays, null, $pass);
 	$eth->socket();
 
 	$status = $eth->status();
 	echo implode($status) . "\n";
 
-	$relay = rand(1, 8);
+	$relay = rand(1, $relays);
 	$on = rand(0, 1);
 
 	echo str_repeat(' ', $relay-1) . ($on ? '1' : '0') . "\n";
