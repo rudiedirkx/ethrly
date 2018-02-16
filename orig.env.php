@@ -1,6 +1,7 @@
 <?php
 
-const ETHRLY_TEST_IP = 'example.com';
-const ETHRLY_TEST_PASS = null;
-const ETHRLY_TEST_PORT1 = 17493;
-const ETHRLY_TEST_PORT2 = 17494;
+use rdx\ethrly\Ethrly1;
+
+return [
+	new Ethrly1('example.com', 17494, 8, 1),
+];

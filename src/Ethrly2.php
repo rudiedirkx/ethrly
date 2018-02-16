@@ -16,7 +16,7 @@ class Ethrly2 extends Ethrly1 {
 			$bytes = str_split($this->password);
 			array_unshift($bytes, chr(121));
 
-			$rsp = $this->write($bytes, true);
+			$rsp = $this->write($bytes, false);
 			if ( $rsp === array(1) ) {
 				$this->isPasswordProtected();
 				return $this->unlocked = true;
@@ -30,43 +30,18 @@ class Ethrly2 extends Ethrly1 {
 		return $this->write(array($on ? 32 : 33, $relay, 0));
 	}
 
-	public function on( $relays = null ) {
-		// Turn all ON
-		if ( $relays === null ) {
-			return $this->write(array(35, 255, 255, 255));
-		}
-
-		// Turn some ON
-		foreach ( (array)$relays AS $n ) {
-			$this->relay($n, true);
-		}
-	}
-
-	public function off( $relays = null ) {
-		// Turn all OFF
-		if ( $relays === null ) {
-			return $this->write(array(35, 0, 0, 0));
-		}
-
-		// Turn some OFF
-		foreach ( (array)$relays AS $n ) {
-			$this->relay($n, false);
-		}
-	}
-
 	public function verifyVersion() {
 		$version = $this->version();
 		return count($version) == 3;
 	}
 
-	// @overridable
 	public function getVersionString() {
 		$version = $this->version();
 		if ( !$version ) {
-			return 'Unknown';
+			return '[ETH2?] Unknown';
 		}
 
-		return "Module {$version[0]}; Hardware {$version[1]}; Software {$version[2]}";
+		return "[ETH2] Module {$version[0]}; Hardware {$version[1]}; Software {$version[2]}";
 	}
 
 	public function isPasswordProtected() {

@@ -73,9 +73,9 @@ class Ethrly1 {
 
 
 
-	public function write( $code, $binary = false ) {
+	protected function write( $code, $convert = true ) {
 		$bytes = (array) $code;
-		if ( !$binary ) {
+		if ( $convert ) {
 			$bytes = array_map('chr', $bytes);
 		}
 
@@ -84,7 +84,7 @@ class Ethrly1 {
 		return $this->read();
 	}
 
-	public function read() {
+	protected function read() {
 		$bytes = @fread($this->socket(), $this->READ_BYTES());
 		if ( $bytes === false || $bytes === '' ) {
 			return array();
@@ -108,10 +108,10 @@ class Ethrly1 {
 	public function getVersionString() {
 		$version = $this->version();
 		if ( !$version ) {
-			return 'Unknown';
+			return '[ETH1?] Unknown';
 		}
 
-		return "Software {$version[0]}";
+		return "[ETH1] Software {$version[0]}";
 	}
 
 	// @overridable
@@ -126,6 +126,8 @@ class Ethrly1 {
 		if ( !$bytes ) {
 			return array();
 		}
+
+		$bytes = array_slice($bytes, $this->STATUS_OFFSET());
 
 		$bits = array();
 		foreach ($bytes as $byte) {
@@ -144,32 +146,6 @@ class Ethrly1 {
 	}
 
 	// @overridable
-	public function on( $relays = null ) {
-		// Turn all ON
-		if ( $relays === null ) {
-			return $this->write(100);
-		}
-
-		// Turn some ON
-		foreach ( (array)$relays AS $n ) {
-			$this->relay($n, true);
-		}
-	}
-
-	// @overridable
-	public function off( $relays = null ) {
-		// Turn all OFF
-		if ( $relays === null ) {
-			return $this->write(110);
-		}
-
-		// Turn some OFF
-		foreach ( (array)$relays AS $n ) {
-			$this->relay($n, false);
-		}
-	}
-
-	// @overridable
 	public function isPasswordProtected() {
 		return null;
 	}
@@ -182,6 +158,11 @@ class Ethrly1 {
 	// @overridable
 	public function STATUS_CODE() {
 		return 91;
+	}
+
+	// @overridable
+	public function STATUS_OFFSET() {
+		return 0;
 	}
 
 	// @overridable
