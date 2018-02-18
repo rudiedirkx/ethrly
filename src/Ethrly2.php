@@ -26,8 +26,10 @@ class Ethrly2 extends Ethrly1 {
 		}
 	}
 
-	public function relay( $relay, $on ) {
-		return $this->write(array($on ? 32 : 33, $relay, 0));
+	public function relay( $relay, $pulse ) {
+		$on = $pulse !== false && $pulse !== 0;
+		$pulse = $on && is_int($pulse) && $pulse >= 100 ? round($pulse/100) : 0;
+		return $this->write(array($on ? 32 : 33, $relay, $pulse));
 	}
 
 	public function verifyVersion() {

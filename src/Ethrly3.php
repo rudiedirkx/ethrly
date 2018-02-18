@@ -6,8 +6,10 @@ namespace rdx\ethrly;
 
 class Ethrly3 extends Ethrly1 {
 
-	public function relay( $relay, $on ) {
-		return $this->write(array(49, $relay, $on ? 1 : 0, 0, 0, 0, 0));
+	public function relay( $relay, $pulse ) {
+		$on = $pulse !== false && $pulse !== 0;
+		$pulse = $on && is_int($pulse) && $pulse >= 100 ? array_reverse(unpack('C*', pack('L', $pulse))) : [0, 0, 0, 0];
+		return $this->write(array_merge(array(49, $relay, $on ? 1 : 0), $pulse));
 	}
 
 	public function verifyVersion() {
