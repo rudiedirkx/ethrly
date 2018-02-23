@@ -127,8 +127,6 @@ class Ethrly1 {
 			return array();
 		}
 
-		$bytes = array_slice($bytes, $this->STATUS_OFFSET());
-
 		$bits = array();
 		foreach ($bytes as $byte) {
 			$bits = array_merge($bits, $this->dec201($byte));
@@ -158,11 +156,6 @@ class Ethrly1 {
 	// @overridable
 	public function STATUS_CODE() {
 		return 91;
-	}
-
-	// @overridable
-	public function STATUS_OFFSET() {
-		return 0;
 	}
 
 	// @overridable
