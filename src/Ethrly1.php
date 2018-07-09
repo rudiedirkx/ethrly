@@ -87,7 +87,7 @@ class Ethrly1 {
 	protected function read() {
 		$bytes = @fread($this->socket(), $this->READ_BYTES());
 		if ( $bytes === false || $bytes === '' ) {
-			return array();
+			return [];
 		}
 		$decimals = array_map('ord', str_split($bytes));
 		return $decimals;
@@ -96,7 +96,7 @@ class Ethrly1 {
 
 	public function version( $force = false ) {
 		if ( $this->version === null || $force ) {
-			$this->version = $this->write($this->VERSION_CODE()) ?: array();
+			$this->version = $this->write($this->VERSION_CODE()) ?: [];
 		}
 
 		return $this->version;
@@ -124,16 +124,20 @@ class Ethrly1 {
 	public function status() {
 		$bytes = $this->write($this->STATUS_CODE());
 		if ( !$bytes ) {
-			return array();
+			return [];
 		}
 
-		$bits = array();
-		foreach ($bytes as $byte) {
+		$bits = [];
+		foreach ( $bytes as $byte ) {
 			$bits = array_merge($bits, $this->dec201($byte));
 		}
 
 		$bits = array_slice($bits, 0, $this->relays);
-		return array_combine(range(1, count($bits)), $bits);
+		if ( $bits ) {
+			return array_combine(range(1, count($bits)), $bits);
+		}
+
+		return [];
 	}
 
 	// @overridable
@@ -166,7 +170,7 @@ class Ethrly1 {
 
 
 	public function dec201( $dec ) {
-		$bin = array();
+		$bin = [];
 		for ( $i=7; $i>=0; $i-- ) {
 			$on = 0 < ($dec & pow(2, $i));
 			$bin[$i+1] = (int) $on;
