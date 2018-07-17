@@ -44,7 +44,7 @@ class Ethrly3 extends Ethrly1 {
 
 	public function getVersionString() {
 		$version = $this->version();
-		if ( !$version ) {
+		if ( !$version || !isset($version[5]) ) {
 			return '[DS?] Unknown';
 		}
 
