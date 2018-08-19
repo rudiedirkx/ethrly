@@ -28,5 +28,17 @@ function testToggle(Ethrly1 $eth) {
 	$status = $eth->status();
 	echo implode($status) . "\n";
 
+	flush();
+	sleep(1);
+
+	$relay = rand(1, $eth->relays);
+	$on = rand(0, 1);
+
+	echo str_repeat(' ', $relay-1) . ($on ? '1' : '0') . "\n";
+	$eth->relay($relay, $on);
+
+	$status = $eth->status();
+	echo implode($status) . "\n";
+
 	echo "\n\n";
 }

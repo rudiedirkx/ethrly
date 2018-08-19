@@ -6,6 +6,59 @@ namespace rdx\ethrly;
 
 class Ethrly3 extends Ethrly1 {
 
+	protected $lastNonceSent = 0;
+	protected $lastNonceReceived = 0;
+
+	protected function encryptBytes( $bytes ) {
+		if ( !$this->password ) {
+			return $bytes;
+		}
+
+		$bytes = str_pad($bytes, 12, chr(0), STR_PAD_RIGHT);
+		$this->lastNonceSent = $this->lastNonceReceived ?: rand();
+		$bytes .= pack('L', $this->lastNonceSent);
+
+// echo 'out (dec): ';
+// print_r(array_map('ord', str_split($bytes)));
+
+		$cipher = 'aes-256-cbc';
+		$ivlen = openssl_cipher_iv_length($cipher);
+		$iv = openssl_random_pseudo_bytes($ivlen);
+		$enc = openssl_encrypt($bytes, $cipher, $this->password, OPENSSL_RAW_DATA | OPENSSL_ZERO_PADDING, $iv);
+		$output = "$iv$enc";
+
+// var_dump(strlen($output));
+// echo "\n\n";
+
+		return $output;
+	}
+
+	protected function decryptBytes( $bytes ) {
+		if ( !$this->password ) {
+			return $bytes;
+		}
+
+// echo 'in (enc): ';
+// print_r(array_map('ord', str_split($bytes)));
+
+		$cipher = 'aes-256-cbc';
+		$ivlen = openssl_cipher_iv_length($cipher);
+		$iv = substr($bytes, 0, $ivlen);
+		$enc = substr($bytes, $ivlen);
+// var_dump(strlen($iv), strlen($enc));
+		$dec = openssl_decrypt($enc, $cipher, $this->password, OPENSSL_RAW_DATA | OPENSSL_ZERO_PADDING, $iv);
+// echo 'in (dec): ';
+// print_r(array_map('ord', str_split($dec)));
+
+		$nonce = array_slice(str_split($dec), -4);
+// print_r(array_map('ord', $nonce));
+		$nonce = unpack('L', implode($nonce));
+		$this->lastNonceReceived = reset($nonce) ?: $this->lastNonceReceived;
+// var_dump($this->lastNonceReceived);
+
+		return $dec;
+	}
+
 	// @overridable
 	public function status() {
 		// Ask relay 1, get all relays
@@ -16,7 +69,6 @@ class Ethrly3 extends Ethrly1 {
 
 		// First byte is for relay 1
 		$bytes = array_slice($bytes, 1);
-		$bytes = array_values(array_reverse($bytes));
 
 		$bits = [];
 		foreach ( $bytes as $byte ) {
@@ -61,7 +113,7 @@ class Ethrly3 extends Ethrly1 {
 	}
 
 	public function READ_BYTES() {
-		return 16;
+		return $this->password ? 32 : 16;
 	}
 
 }

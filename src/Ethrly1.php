@@ -72,6 +72,13 @@ class Ethrly1 {
 	}
 
 
+	protected function encryptBytes( $bytes ) {
+		return $bytes;
+	}
+
+	protected function decryptBytes( $bytes ) {
+		return $bytes;
+	}
 
 	protected function write( $code, $convert = true ) {
 		$bytes = (array) $code;
@@ -79,7 +86,7 @@ class Ethrly1 {
 			$bytes = array_map('chr', $bytes);
 		}
 
-		@fwrite($this->socket(), implode($bytes));
+		@fwrite($this->socket(), $this->encryptBytes(implode($bytes)));
 
 		return $this->read();
 	}
@@ -89,7 +96,8 @@ class Ethrly1 {
 		if ( $bytes === false || $bytes === '' ) {
 			return [];
 		}
-		$decimals = array_map('ord', str_split($bytes));
+
+		$decimals = array_map('ord', str_split($this->decryptBytes($bytes)));
 		return $decimals;
 	}
 
