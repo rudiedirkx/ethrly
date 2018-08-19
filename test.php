@@ -23,13 +23,18 @@ function testToggle(Ethrly1 $eth) {
 	$on = rand(0, 1);
 
 	echo str_repeat(' ', $relay-1) . ($on ? '1' : '0') . "\n";
-	$eth->relay($relay, $on);
+	$eth->relay($relay, $on * 900); // 900 ms pulse
 
 	$status = $eth->status();
 	echo implode($status) . "\n";
 
 	flush();
-	sleep(1);
+	sleep(2);
+
+	if ($on) {
+		$status = $eth->status();
+		echo implode($status) . "\n";
+	}
 
 	$relay = rand(1, $eth->relays);
 	$on = rand(0, 1);
