@@ -17,8 +17,8 @@ foreach ( $instances as $eth ) {
 	$status = $eth->status();
 	echo implode(' ', str_split(implode($status), 4)) . "\n";
 
-	// Turn all OFF
-	for ( $relay = 1; $relay < $eth->relays; $relay++ ) {
+	// // Turn all OFF
+	for ( $relay = 1; $relay <= $eth->relays; $relay++ ) {
 		$eth->relay($relay, false);
 	}
 
@@ -31,7 +31,7 @@ foreach ( $instances as $eth ) {
 	sleep(1);
 
 	// Turn all ON
-	for ( $relay = 1; $relay < $eth->relays; $relay++ ) {
+	for ( $relay = 1; $relay <= $eth->relays; $relay++ ) {
 		$eth->relay($relay, true);
 	}
 
@@ -40,4 +40,6 @@ foreach ( $instances as $eth ) {
 	// Show relays
 	$status = $eth->status();
 	echo implode(' ', str_split(implode($status), 4)) . "\n";
+
+	echo "\n\n\n";
 }

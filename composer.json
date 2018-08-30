@@ -14,5 +14,7 @@
             "rdx\\ethrly\\": "src/"
         }
     },
-    "require": {}
+    "require-dev": {
+        "symfony/console": "^4.1"
+    }
 }
