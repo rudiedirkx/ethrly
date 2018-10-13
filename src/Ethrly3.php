@@ -69,6 +69,8 @@ class Ethrly3 extends Ethrly1 {
 
 		// First byte is for relay 1
 		$bytes = array_slice($bytes, 1);
+		$bytes = array_slice($bytes, -1 * ceil($this->relays / 8));
+		$bytes = array_reverse($bytes);
 
 		$bits = [];
 		foreach ( $bytes as $byte ) {
