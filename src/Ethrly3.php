@@ -1,6 +1,7 @@
 <?php
 
 // http://www.robot-electronics.co.uk/files/dS2824.pdf
+// Software 2.x
 
 namespace rdx\ethrly;
 
@@ -59,6 +60,18 @@ class Ethrly3 extends Ethrly1 {
 		return $dec;
 	}
 
+	protected function extractStatusBytes( array $bytes ) {
+		// Skip 1, then take however many bytes this setup needs
+		$bytes = array_slice($bytes, 1, ceil($this->relays / 8));
+
+		// Pad to 4
+		while ( count($bytes) < 4 ) {
+			array_unshift($bytes, 0);
+		}
+
+		return $bytes;
+	}
+
 	// @overridable
 	public function status() {
 		// Ask relay 1, get all relays
@@ -67,9 +80,8 @@ class Ethrly3 extends Ethrly1 {
 			return [];
 		}
 
-		// First byte is for relay 1
-		$bytes = array_slice($bytes, 1);
-		$bytes = array_slice($bytes, -1 * ceil($this->relays / 8));
+		$bytes = $this->extractStatusBytes($bytes);
+
 		$bytes = array_reverse($bytes);
 
 		$bits = [];
