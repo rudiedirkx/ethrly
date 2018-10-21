@@ -10,6 +10,14 @@ class Ethrly3 extends Ethrly1 {
 	protected $lastNonceSent = 0;
 	protected $lastNonceReceived = 0;
 
+	public function unlock() {
+		if ( !$this->unlocked ) {
+			// Get first nonce
+			$this->version();
+			return $this->unlocked = true;
+		}
+	}
+
 	protected function encryptBytes( $bytes ) {
 		if ( !$this->password ) {
 			return $bytes;
@@ -17,6 +25,7 @@ class Ethrly3 extends Ethrly1 {
 
 		$bytes = str_pad($bytes, 12, chr(0), STR_PAD_RIGHT);
 		$this->lastNonceSent = $this->lastNonceReceived ?: rand();
+// var_dump($this->lastNonceSent);
 		$bytes .= pack('L', $this->lastNonceSent);
 
 // echo 'out (dec): ';
