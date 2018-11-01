@@ -10,7 +10,7 @@ class Ethrly3 extends Ethrly1 {
 	protected $lastNonceSent = 0;
 	protected $lastNonceReceived = 0;
 
-	public function unlock() {
+	protected function unlock() {
 		if ( !$this->unlocked ) {
 			// Get first nonce
 			$this->version();
@@ -25,20 +25,13 @@ class Ethrly3 extends Ethrly1 {
 
 		$bytes = str_pad($bytes, 12, chr(0), STR_PAD_RIGHT);
 		$this->lastNonceSent = $this->lastNonceReceived ?: rand();
-// var_dump($this->lastNonceSent);
 		$bytes .= pack('L', $this->lastNonceSent);
-
-// echo 'out (dec): ';
-// print_r(array_map('ord', str_split($bytes)));
 
 		$cipher = 'aes-256-cbc';
 		$ivlen = openssl_cipher_iv_length($cipher);
 		$iv = openssl_random_pseudo_bytes($ivlen);
 		$enc = openssl_encrypt($bytes, $cipher, $this->password, OPENSSL_RAW_DATA | OPENSSL_ZERO_PADDING, $iv);
 		$output = "$iv$enc";
-
-// var_dump(strlen($output));
-// echo "\n\n";
 
 		return $output;
 	}
@@ -48,23 +41,15 @@ class Ethrly3 extends Ethrly1 {
 			return $bytes;
 		}
 
-// echo 'in (enc): ';
-// print_r(array_map('ord', str_split($bytes)));
-
 		$cipher = 'aes-256-cbc';
 		$ivlen = openssl_cipher_iv_length($cipher);
 		$iv = substr($bytes, 0, $ivlen);
 		$enc = substr($bytes, $ivlen);
-// var_dump(strlen($iv), strlen($enc));
 		$dec = openssl_decrypt($enc, $cipher, $this->password, OPENSSL_RAW_DATA | OPENSSL_ZERO_PADDING, $iv);
-// echo 'in (dec): ';
-// print_r(array_map('ord', str_split($dec)));
 
 		$nonce = array_slice(str_split($dec), -4);
-// print_r(array_map('ord', $nonce));
 		$nonce = unpack('L', implode($nonce));
 		$this->lastNonceReceived = reset($nonce) ?: $this->lastNonceReceived;
-// var_dump($this->lastNonceReceived);
 
 		return $dec;
 	}
@@ -81,7 +66,6 @@ class Ethrly3 extends Ethrly1 {
 		return $bytes;
 	}
 
-	// @overridable
 	public function status() {
 		// Ask relay 1, get all relays
 		$bytes = $this->write([$this->STATUS_CODE(), 1]);
@@ -112,11 +96,6 @@ class Ethrly3 extends Ethrly1 {
 		return $this->write(array_merge([49, $relay, $on ? 1 : 0], $pulse));
 	}
 
-	public function verifyVersion() {
-		$version = $this->version();
-		return count($version) == 8;
-	}
-
 	public function getVersionString() {
 		$version = $this->version();
 		if ( !$version || !isset($version[5]) ) {
@@ -127,15 +106,15 @@ class Ethrly3 extends Ethrly1 {
 		return "[DS] Module {$version[0]}; System {$version[1]}.{$version[2]}; Application {$version[3]}.{$version[4]}; {$V}V";
 	}
 
-	public function VERSION_CODE() {
+	protected function VERSION_CODE() {
 		return 48;
 	}
 
-	public function STATUS_CODE() {
+	protected function STATUS_CODE() {
 		return 51;
 	}
 
-	public function READ_BYTES() {
+	protected function READ_BYTES() {
 		return $this->password ? 32 : 16;
 	}
 

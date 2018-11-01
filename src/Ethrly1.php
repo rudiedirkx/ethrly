@@ -60,7 +60,7 @@ class Ethrly1 {
 		return $this->socket;
 	}
 
-	public function unlock() {
+	protected function unlock() {
 		// This version doesn't have password protection
 	}
 
@@ -112,7 +112,6 @@ class Ethrly1 {
 
 
 
-	// @overridable
 	public function getVersionString() {
 		$version = $this->version();
 		if ( !$version ) {
@@ -122,13 +121,6 @@ class Ethrly1 {
 		return "[ETH1] Software {$version[0]}";
 	}
 
-	// @overridable
-	public function verifyVersion() {
-		$version = $this->version();
-		return count($version) == 1;
-	}
-
-	// @overridable
 	public function status() {
 		$bytes = $this->write($this->STATUS_CODE());
 		if ( !$bytes ) {
@@ -148,36 +140,27 @@ class Ethrly1 {
 		return [];
 	}
 
-	// @overridable
 	public function relay( $relay, $on ) {
 		$code = 100 + $relay + ( $on ? 0 : 10 );
 
 		return $this->write($code);
 	}
 
-	// @overridable
-	public function isPasswordProtected() {
-		return null;
-	}
-
-	// @overridable
-	public function READ_BYTES() {
+	protected function READ_BYTES() {
 		return 1;
 	}
 
-	// @overridable
-	public function STATUS_CODE() {
+	protected function STATUS_CODE() {
 		return 91;
 	}
 
-	// @overridable
-	public function VERSION_CODE() {
+	protected function VERSION_CODE() {
 		return 90;
 	}
 
 
 
-	public function dec201( $dec ) {
+	protected function dec201( $dec ) {
 		$bin = [];
 		for ( $i=7; $i>=0; $i-- ) {
 			$on = 0 < ($dec & pow(2, $i));

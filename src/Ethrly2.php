@@ -11,7 +11,7 @@ namespace rdx\ethrly;
 
 class Ethrly2 extends Ethrly1 {
 
-	public function unlock() {
+	protected function unlock() {
 		if ( $this->password !== null ) {
 			$bytes = str_split($this->password);
 			array_unshift($bytes, chr(121));
@@ -32,11 +32,6 @@ class Ethrly2 extends Ethrly1 {
 		return $this->write([$on ? 32 : 33, $relay, $pulse]);
 	}
 
-	public function verifyVersion() {
-		$version = $this->version();
-		return count($version) == 3;
-	}
-
 	public function getVersionString() {
 		$version = $this->version();
 		if ( !$version ) {
@@ -46,25 +41,15 @@ class Ethrly2 extends Ethrly1 {
 		return "[ETH2] Module {$version[0]}; Hardware {$version[1]}; Software {$version[2]}";
 	}
 
-	public function isPasswordProtected() {
-		$locked = $this->write(122);
-		if ( !$locked ) {
-			return null;
-		}
-
-		$locked = $locked[0];
-		return $locked == 0;
-	}
-
-	public function READ_BYTES() {
+	protected function READ_BYTES() {
 		return 6;
 	}
 
-	public function STATUS_CODE() {
+	protected function STATUS_CODE() {
 		return 36;
 	}
 
-	public function VERSION_CODE() {
+	protected function VERSION_CODE() {
 		return 16;
 	}
 
