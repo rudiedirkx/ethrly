@@ -143,7 +143,13 @@ class Ethrly1 {
 	public function relay( $relay, $on ) {
 		$code = 100 + $relay + ( $on ? 0 : 10 );
 
-		return $this->write($code);
+		$rsp = $this->write($code);
+
+		return $this->isACK($rsp);
+	}
+
+	protected function isACK( $bytes ) {
+		return isset($bytes[0]) && $bytes[0] === 0;
 	}
 
 	protected function READ_BYTES() {
