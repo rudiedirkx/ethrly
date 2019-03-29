@@ -86,7 +86,8 @@ class Ethrly1 {
 			$bytes = array_map('chr', $bytes);
 		}
 
-		@fwrite($this->socket(), $this->encryptBytes(implode($bytes)));
+		$write = $this->encryptBytes(implode($bytes));
+		@fwrite($this->socket(), $write);
 
 		return $this->read();
 	}
@@ -97,7 +98,8 @@ class Ethrly1 {
 			return [];
 		}
 
-		$decimals = array_map('ord', str_split($this->decryptBytes($bytes)));
+		$read = $this->decryptBytes($bytes);
+		$decimals = array_map('ord', str_split($read));
 		return $decimals;
 	}
 

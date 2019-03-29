@@ -19,7 +19,7 @@ class Ethrly3 extends Ethrly1 {
 	}
 
 	protected function encryptBytes( $bytes ) {
-		if ( !$this->password ) {
+		if ( strlen($this->password) != 32 ) {
 			return $bytes;
 		}
 
@@ -37,7 +37,11 @@ class Ethrly3 extends Ethrly1 {
 	}
 
 	protected function decryptBytes( $bytes ) {
-		if ( !$this->password ) {
+		if ( strlen($this->password) != 32 ) {
+			return $bytes;
+		}
+
+		if ( strlen($bytes) != 32 ) {
 			return $bytes;
 		}
 
