@@ -11,11 +11,13 @@ class Ethrly3 extends Ethrly1 {
 	protected $lastNonceReceived = 0;
 
 	protected function unlock() {
-		if ( !$this->unlocked ) {
-			// Get first nonce
-			$this->version();
-			return $this->unlocked = true;
+		if ( $this->unlocked ) {
+			return;
 		}
+
+		// Get first nonce
+		$this->version();
+		$this->unlocked = true;
 	}
 
 	protected function encryptBytes( $bytes ) {

@@ -12,17 +12,20 @@ namespace rdx\ethrly;
 class Ethrly2 extends Ethrly1 {
 
 	protected function unlock() {
-		if ( $this->password !== null ) {
-			$bytes = str_split($this->password);
-			array_unshift($bytes, chr(121));
+		if ( $this->unlocked ) {
+			return;
+		}
 
-			$rsp = $this->write($bytes, false);
-			if ( $rsp === [1] ) {
-				$this->isPasswordProtected();
-				return $this->unlocked = true;
-			}
+		if ( !$this->password ) {
+			return;
+		}
 
-			return $this->unlocked = false;
+		$bytes = str_split($this->password);
+		array_unshift($bytes, chr(121));
+
+		$rsp = $this->write($bytes, false);
+		if ( $rsp === [1] ) {
+			$this->unlocked = true;
 		}
 	}
 
