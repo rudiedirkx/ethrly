@@ -53,11 +53,33 @@ class Ethrly1 {
 			if ( $this->socket ) {
 				stream_set_timeout($this->socket, $this->timeout);
 
-				$this->unlock();
+				if ( $this->socketTimedOut() ) {
+					$this->error = 'Timeout after socket open';
+					$this->socket = false;
+				}
+				else {
+					$this->unlock();
+
+					if ( $this->socketTimedOut() ) {
+						$this->error = 'Timeout after unlock';
+						$this->socket = false;
+					}
+				}
 			}
 		}
 
 		return $this->socket;
+	}
+
+	protected function socketTimedOut() {
+		if ( $this->socket ) {
+			$properties = stream_get_meta_data($this->socket);
+			if ( isset($properties['timed_out']) ) {
+				return $properties['timed_out'];
+			}
+		}
+
+		return false;
 	}
 
 	protected function unlock() {
