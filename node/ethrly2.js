@@ -64,6 +64,15 @@ ports.forEach(function(port) {
 				var relay = data[1];
 				var relayIndex = relay - 1;
 				status[relayIndex] = 1;
+
+				if ( data[2] ) {
+					console.log('PULSE: ' + (data[2] * 100) + ' ms');
+					setTimeout(function(relayIndex) {
+						status[relayIndex] = 0;
+
+						console.log('New status AFTER PULSE:', status.join(''));
+					}, data[2] * 100, relayIndex);
+				}
 			}
 			else if ( cmd == 33 ) {
 				// one off
