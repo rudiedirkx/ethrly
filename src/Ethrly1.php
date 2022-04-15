@@ -108,13 +108,19 @@ class Ethrly1 {
 			$bytes = array_map('chr', $bytes);
 		}
 
-		$write = $this->encryptBytes(implode($bytes));
-		@fwrite($this->socket(), $write);
+		if ($this->socket()) {
+			$write = $this->encryptBytes(implode($bytes));
+			@fwrite($this->socket(), $write);
+		}
 
 		return $this->read();
 	}
 
 	protected function read() {
+		if (!$this->socket()) {
+			return [];
+		}
+
 		$bytes = @fread($this->socket(), $this->READ_BYTES());
 		if ( $bytes === false || $bytes === '' ) {
 			return [];
