@@ -11,7 +11,7 @@ namespace rdx\ethrly;
 
 class Ethrly2 extends Ethrly1 {
 
-	protected function unlock() {
+	protected function unlock() : void {
 		if ( $this->unlocked ) {
 			return;
 		}
@@ -29,7 +29,7 @@ class Ethrly2 extends Ethrly1 {
 		}
 	}
 
-	public function relay( $relay, $pulse ) {
+	public function relay( int $relay, int|bool $on ) : bool {
 		$on = $pulse !== false && $pulse !== 0;
 		$pulse = $on && is_int($pulse) && $pulse >= 100 ? round($pulse/100) : 0;
 
@@ -38,7 +38,7 @@ class Ethrly2 extends Ethrly1 {
 		return $this->isACK($rsp);
 	}
 
-	public function getVersionString() {
+	public function getVersionString() : string {
 		$version = $this->version();
 		if ( !$version ) {
 			return '[ETH2?] Unknown';
@@ -47,15 +47,15 @@ class Ethrly2 extends Ethrly1 {
 		return "[ETH2] Module {$version[0]}; Hardware {$version[1]}; Software {$version[2]}";
 	}
 
-	protected function READ_BYTES() {
+	protected function READ_BYTES() : int {
 		return 6;
 	}
 
-	protected function STATUS_CODE() {
+	protected function STATUS_CODE() : int {
 		return 36;
 	}
 
-	protected function VERSION_CODE() {
+	protected function VERSION_CODE() : int {
 		return 16;
 	}
 

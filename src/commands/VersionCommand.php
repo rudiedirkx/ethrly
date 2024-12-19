@@ -13,12 +13,16 @@ class VersionCommand extends EthrlyCommand {
 		$this->setName('version');
 	}
 
-	protected function execute(InputInterface $input, OutputInterface $output) {
+	protected function execute(InputInterface $input, OutputInterface $output) : int {
 		$api = $this->api($input);
 
 		$version = $api->getVersionString();
 
 		echo "$version\n";
+
+		if ($output->isVerbose()) dump($api);
+
+		return 0;
 	}
 
 }

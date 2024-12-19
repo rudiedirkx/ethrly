@@ -10,7 +10,7 @@ class Ethrly3 extends Ethrly1 {
 	protected $lastNonceSent = 0;
 	protected $lastNonceReceived = 0;
 
-	protected function unlock() {
+	protected function unlock() : void {
 		if ( $this->unlocked ) {
 			return;
 		}
@@ -20,8 +20,8 @@ class Ethrly3 extends Ethrly1 {
 		$this->unlocked = true;
 	}
 
-	protected function encryptBytes( $bytes ) {
-		if ( strlen($this->password) != 32 ) {
+	protected function encryptBytes( string $bytes ) : string {
+		if ( strlen($this->password ?? '') != 32 ) {
 			return $bytes;
 		}
 
@@ -38,8 +38,8 @@ class Ethrly3 extends Ethrly1 {
 		return $output;
 	}
 
-	protected function decryptBytes( $bytes ) {
-		if ( strlen($this->password) != 32 ) {
+	protected function decryptBytes( string $bytes ) : string {
+		if ( strlen($this->password ?? '') != 32 ) {
 			return $bytes;
 		}
 
@@ -60,7 +60,7 @@ class Ethrly3 extends Ethrly1 {
 		return $dec;
 	}
 
-	protected function extractStatusBytes( array $bytes ) {
+	protected function extractStatusBytes( array $bytes ) : array {
 		// Skip 1, then take however many bytes this setup needs
 		$bytes = array_slice($bytes, 1, ceil($this->relays / 8));
 
@@ -72,7 +72,7 @@ class Ethrly3 extends Ethrly1 {
 		return $bytes;
 	}
 
-	public function status() {
+	public function status() : array {
 		// Ask relay 1, get all relays
 		$bytes = $this->write([$this->STATUS_CODE(), 1]);
 		if ( !$bytes ) {
@@ -96,7 +96,7 @@ class Ethrly3 extends Ethrly1 {
 		return [];
 	}
 
-	public function relay( $relay, $pulse ) {
+	public function relay( int $relay, int|bool $on ) : bool {
 		$on = $pulse !== false && $pulse !== 0;
 		$pulse = $on && is_int($pulse) && $pulse >= 100 ? array_reverse(unpack('C*', pack('L', $pulse))) : [0, 0, 0, 0];
 
@@ -105,26 +105,30 @@ class Ethrly3 extends Ethrly1 {
 		return $this->isACK($rsp);
 	}
 
-	public function getVersionString() {
+	public function getVersionString() : string {
 		$version = $this->version();
 		if ( !$version || !isset($version[5]) ) {
 			return '[DS?] Unknown';
 		}
 
-		$V = number_format($version[5] / 10, 1);
-		return "[DS] Module {$version[0]}; System {$version[1]}.{$version[2]}; Application {$version[3]}.{$version[4]}; {$V}V";
+		$volt = number_format($version[5] / 10, 1);
+
+		$temp = isset($version[7]) ? ($version[6] * 256 + $version[7]) / 10 : null;
+		$temp = $temp ? "; {$temp}C" : '';
+
+		return "[DS] Module {$version[0]}; System {$version[1]}.{$version[2]}; Application {$version[3]}.{$version[4]}; {$volt}V{$temp}";
 	}
 
-	protected function VERSION_CODE() {
-		return 48;
+	protected function READ_BYTES() : int {
+		return $this->password ? 32 : 16;
 	}
 
-	protected function STATUS_CODE() {
+	protected function STATUS_CODE() : int {
 		return 51;
 	}
 
-	protected function READ_BYTES() {
-		return $this->password ? 32 : 16;
+	protected function VERSION_CODE() : int {
+		return 48;
 	}
 
 }

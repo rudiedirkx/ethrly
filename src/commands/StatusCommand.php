@@ -13,12 +13,16 @@ class StatusCommand extends EthrlyCommand {
 		$this->setName('status');
 	}
 
-	protected function execute(InputInterface $input, OutputInterface $output) {
+	protected function execute(InputInterface $input, OutputInterface $output) : int {
 		$api = $this->api($input);
 
 		$status = $api->status();
 
 		echo implode($status) . "\n";
+
+		if ($output->isVerbose()) dump($api);
+
+		return 0;
 	}
 
 }

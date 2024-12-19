@@ -17,7 +17,7 @@ class ToggleCommand extends EthrlyCommand {
 		$this->addOption('off', null, InputOption::VALUE_NONE);
 	}
 
-	protected function execute(InputInterface $input, OutputInterface $output) {
+	protected function execute(InputInterface $input, OutputInterface $output) : int {
 		$relay = $input->getOption('relay');
 		if ( !$relay ) {
 			echo "Need --relay option\n";
@@ -42,6 +42,10 @@ class ToggleCommand extends EthrlyCommand {
 
 		$status = $api->status();
 		echo "after:\n" . implode($status) . "\n";
+
+		if ($output->isVerbose()) dump($api);
+
+		return 0;
 	}
 
 }
