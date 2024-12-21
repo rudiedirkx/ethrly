@@ -15,28 +15,29 @@ class Ethrly1 {
 	// Necessary
 	public int $port;
 	public int $relays;
-	public float $timeout;
+	public int $timeout;
 
 	// Runtime
-	/** @var resource */
-	public $socket;
-	/** @var resource */
-	public $origSocket;
+	/** @var resource|false|null */
+	public $socket = null;
+	/** @var resource|null */
+	public $origSocket = null;
 	public ?bool $unlocked = null;
 	public string $error = '';
 	public int $errno = 0;
+	/** @var null|list<int> */
 	public ?array $version = null;
 
 	// For logging
-	public $id = 0;
-	public $name = '';
-	public $active = true;
+	public int $id = 0;
+	public string $name = '';
+	public bool $active = true;
 
 	public function __construct(
 		public string $ip,
 		?int $port = null,
 		?int $relays = null,
-		?float $timeout = null,
+		?int $timeout = null,
 		public ?string $password = null,
 	) {
 		$this->port = $port ?? self::DEFAULT_PORT;
@@ -44,6 +45,9 @@ class Ethrly1 {
 		$this->timeout = $timeout ?? self::DEFAULT_TIMEOUT;
 	}
 
+	/**
+	 * @return resource|false
+	 */
 	public function socket() {
 		if ( $this->socket === null ) {
 			$this->socket = @fsockopen($this->ip, $this->port, $this->errno, $this->error, $this->timeout) ?: false;
@@ -73,7 +77,7 @@ class Ethrly1 {
 	protected function socketTimedOut() : bool {
 		if ( $this->socket ) {
 			$properties = stream_get_meta_data($this->socket);
-			if ( isset($properties['timed_out']) ) {
+			if ( isset($properties['timed_out']) ) { // @phpstan-ignore isset.offset
 				return (bool) $properties['timed_out'];
 			}
 		}
@@ -107,13 +111,11 @@ class Ethrly1 {
 
 	/**
 	 * @param int|list<int> $code
-	 * @return int|list<int>
+	 * @return list<int>
 	 */
-	protected function write( int|array $code, bool $convert = true ) : array {
+	protected function write( int|array $code ) : array {
 		$bytes = (array) $code;
-		if ( $convert ) {
-			$bytes = array_map('chr', $bytes);
-		}
+		$bytes = array_map('chr', $bytes);
 
 		if ( $this->socket() ) {
 			$write = $this->encryptBytes(implode($bytes));
@@ -124,7 +126,7 @@ class Ethrly1 {
 	}
 
 	/**
-	 * @return int|list<int>
+	 * @return list<int>
 	 */
 	protected function read() : array {
 		if (!$this->socket()) {
@@ -143,7 +145,7 @@ class Ethrly1 {
 
 
 	/**
-	 * @return int|list<int>
+	 * @return list<int>
 	 */
 	public function version( bool $force = false ) : array {
 		if ( $this->version === null || $force ) {
@@ -194,7 +196,10 @@ class Ethrly1 {
 		return $this->isACK($rsp);
 	}
 
-	protected function isACK( string $bytes ) : bool {
+	/**
+	 * @param list<int> $bytes
+	 */
+	protected function isACK( array $bytes ) : bool {
 		return isset($bytes[0]) && $bytes[0] === 0;
 	}
 

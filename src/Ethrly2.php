@@ -21,15 +21,16 @@ class Ethrly2 extends Ethrly1 {
 		}
 
 		$bytes = str_split($this->password);
-		array_unshift($bytes, chr(121));
+		$bytes = array_map(ord(...), $bytes);
+		array_unshift($bytes, 121);
 
-		$rsp = $this->write($bytes, false);
+		$rsp = $this->write($bytes);
 		if ( $rsp === [1] ) {
 			$this->unlocked = true;
 		}
 	}
 
-	public function relay( int $relay, int|bool $on ) : bool {
+	public function relay( int $relay, int|bool $pulse ) : bool {
 		$on = $pulse !== false && $pulse !== 0;
 		$pulse = $on && is_int($pulse) && $pulse >= 100 ? round($pulse/100) : 0;
 

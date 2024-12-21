@@ -6,6 +6,7 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
+use rdx\ethrly\Ethrly1;
 
 abstract class EthrlyCommand extends Command {
 
@@ -18,7 +19,7 @@ abstract class EthrlyCommand extends Command {
 		$this->addOption('timeout', 't', InputOption::VALUE_OPTIONAL, '', 3);
 	}
 
-	protected function api(InputInterface $input) {
+	protected function api(InputInterface $input) : Ethrly1 {
 		$ip = $input->getArgument('ip');
 		$port = $input->getArgument('port');
 		$password = $input->getOption('password');

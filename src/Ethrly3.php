@@ -7,8 +7,8 @@ namespace rdx\ethrly;
 
 class Ethrly3 extends Ethrly1 {
 
-	protected $lastNonceSent = 0;
-	protected $lastNonceReceived = 0;
+	protected int $lastNonceSent = 0;
+	protected int $lastNonceReceived = 0;
 
 	protected function unlock() : void {
 		if ( $this->unlocked ) {
@@ -26,7 +26,7 @@ class Ethrly3 extends Ethrly1 {
 		}
 
 		$bytes = str_pad($bytes, 12, chr(0), STR_PAD_RIGHT);
-		$this->lastNonceSent = $this->lastNonceReceived ?: rand();
+		$this->lastNonceSent = $this->lastNonceReceived ?: rand(1_000_000, 4_000_000_000);
 		$bytes .= pack('L', $this->lastNonceSent);
 
 		$cipher = 'aes-256-cbc';
@@ -60,9 +60,13 @@ class Ethrly3 extends Ethrly1 {
 		return $dec;
 	}
 
+	/**
+	 * @param list<int> $bytes
+	 * @return list<int>
+	 */
 	protected function extractStatusBytes( array $bytes ) : array {
 		// Skip 1, then take however many bytes this setup needs
-		$bytes = array_slice($bytes, 1, ceil($this->relays / 8));
+		$bytes = array_slice($bytes, 1, (int) ceil($this->relays / 8));
 
 		// Pad to 4
 		while ( count($bytes) < 4 ) {
@@ -96,7 +100,7 @@ class Ethrly3 extends Ethrly1 {
 		return [];
 	}
 
-	public function relay( int $relay, int|bool $on ) : bool {
+	public function relay( int $relay, int|bool $pulse ) : bool {
 		$on = $pulse !== false && $pulse !== 0;
 		$pulse = $on && is_int($pulse) && $pulse >= 100 ? array_reverse(unpack('C*', pack('L', $pulse))) : [0, 0, 0, 0];
 
