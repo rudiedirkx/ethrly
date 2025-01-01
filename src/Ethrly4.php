@@ -1,7 +1,7 @@
 <?php
 
 // http://www.robot-electronics.co.uk/files/dS2824.pdf
-// Software 3.x/4.x
+// Software DS 3.x/4.x
 
 namespace rdx\ethrly;
 

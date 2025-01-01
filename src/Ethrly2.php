@@ -45,7 +45,9 @@ class Ethrly2 extends Ethrly1 {
 			return '[ETH2?] Unknown';
 		}
 
-		return "[ETH2] Module {$version[0]}; Hardware {$version[1]}; Software {$version[2]}";
+		$module = self::MODULES[ $version[0] ] ?? 'ETH ' . $version[0] . '?';
+
+		return "[$module] Hardware {$version[1]}; Software {$version[2]}";
 	}
 
 	protected function READ_BYTES() : int {

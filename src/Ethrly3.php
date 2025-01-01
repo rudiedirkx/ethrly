@@ -1,7 +1,7 @@
 <?php
 
 // http://www.robot-electronics.co.uk/files/dS2824.pdf
-// Software 2.x
+// Software DS 2.x
 
 namespace rdx\ethrly;
 
@@ -115,12 +115,14 @@ class Ethrly3 extends Ethrly1 {
 			return '[DS?] Unknown';
 		}
 
+		$module = self::MODULES[ $version[0] ] ?? 'DS ' . $version[0] . '?';
+
 		$volt = number_format($version[5] / 10, 1);
 
 		$temp = isset($version[7]) ? ($version[6] * 256 + $version[7]) / 10 : null;
 		$temp = $temp ? "; {$temp}C" : '';
 
-		return "[DS] Module {$version[0]}; System {$version[1]}.{$version[2]}; Application {$version[3]}.{$version[4]}; {$volt}V{$temp}";
+		return "[$module] System {$version[1]}.{$version[2]}; Application {$version[3]}.{$version[4]}; {$volt}V{$temp}";
 	}
 
 	protected function READ_BYTES() : int {

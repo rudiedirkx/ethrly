@@ -8,6 +8,31 @@ namespace rdx\ethrly;
 
 class Ethrly1 {
 
+	protected const MODULES = [
+		16 => 'ETH-RLY16',
+		17 => 'ETH-RLY02',
+		18 => 'ETH002',
+		19 => 'ETH008',
+		20 => 'ETH484',
+		21 => 'ETH8020',
+		23 => 'ETH0621',
+		25 => 'ETH8000',
+		29 => 'ETH044',
+		30 => 'DS3484',
+		31 => 'DS1242',
+		32 => 'DS2242',
+		34 => 'DS2824',
+		35 => 'DS378',
+		42 => 'DS2832',
+		47 => 'DS2408',
+		48 => 'DSX42L',
+		49 => 'DSX42H',
+		50 => 'DSX42T',
+		51 => 'ETH1620',
+		52 => 'ETH1610',
+		53 => 'DS3462',
+	];
+
 	public const DEFAULT_PORT = 17494;
 	public const DEFAULT_RELAYS = 8;
 	public const DEFAULT_TIMEOUT = 5;
@@ -162,6 +187,8 @@ class Ethrly1 {
 		if ( !$version ) {
 			return '[ETH1?] Unknown';
 		}
+
+		// No modules, system, physical state, etc.
 
 		return "[ETH1] Software {$version[0]}";
 	}
